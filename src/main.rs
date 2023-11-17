@@ -28,8 +28,8 @@ struct TxRecord {
     timestamp: u32,
 }
 
-fn search_neighbours(peers: Vec<String>, records: Vec<TxRecord>, level: u32) -> Vec<String> {
-    if level > 2 {
+fn search_neighbours(peers: Vec<String>, records: Vec<TxRecord>, level: u8) -> Vec<String> {
+    if level > LIMIT {
         return Vec::new();
     }
     let mut set: HashSet<String> = HashSet::new();

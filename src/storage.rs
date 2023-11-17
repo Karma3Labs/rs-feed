@@ -23,11 +23,6 @@ impl CSVFileStorage {
     pub fn new(filepath: PathBuf) -> Self {
         Self { filepath }
     }
-
-    /// Returns the path to the file.
-    pub fn filepath(&self) -> &PathBuf {
-        &self.filepath
-    }
 }
 
 impl<T: Serialize + DeserializeOwned + Clone> Storage<Vec<T>> for CSVFileStorage {
