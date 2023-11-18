@@ -5,11 +5,14 @@ use std::collections::{HashMap, HashSet};
 use storage::{get_data_path, CSVFileStorage, Storage};
 use thiserror::Error;
 
+use crate::matrix::Vector;
+
 mod matrix;
 mod storage;
 
 const LIMIT: u8 = 2;
 const NUM_ITER: usize = 30;
+const PRE_TRUST_WEIGHT: f64 = 0.2;
 
 #[derive(Debug, Error)]
 pub enum FeedError {
@@ -116,11 +119,17 @@ fn main() {
     global_scores[*a0_index] = 1.;
     println!("global_scores = {:?}", global_scores);
 
+    let mut pre_trust = vec![0.; size];
+    pre_trust[*a0_index] = 1.;
+
     let mat = Matrix::new(normalised_local_matrix);
     let mat_t = mat.transpose();
 
     for _ in 0..NUM_ITER {
         global_scores = mat_t.mul_add(global_scores);
+        let gs_vec = Vector::new(global_scores.clone()).mul(1. - PRE_TRUST_WEIGHT);
+        let pt_vec = Vector::new(pre_trust.clone()).mul(PRE_TRUST_WEIGHT);
+        global_scores = gs_vec.add(pt_vec).data();
         println!("global_scores = {:?}", global_scores);
     }
 

@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 pub struct Matrix {
     dat: Vec<Vec<f64>>,
     size: (usize, usize),
@@ -43,5 +45,37 @@ impl Matrix {
         }
 
         res
+    }
+}
+
+pub struct Vector {
+    dat: Vec<f64>,
+}
+
+impl Vector {
+    pub fn new(vector: Vec<f64>) -> Self {
+        Self {
+            dat: vector.clone(),
+        }
+    }
+
+    pub fn data(self) -> Vec<f64> {
+        self.dat
+    }
+
+    pub fn mul(&self, scalar: f64) -> Self {
+        Self {
+            dat: self.dat.iter().map(|x| x * scalar).collect(),
+        }
+    }
+
+    pub fn add(&self, other: Self) -> Self {
+        let res = self
+            .dat
+            .iter()
+            .zip(other.dat)
+            .map(|(x, y)| x + y)
+            .collect_vec();
+        Self { dat: res }
     }
 }
