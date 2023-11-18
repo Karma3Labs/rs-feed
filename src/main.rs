@@ -49,9 +49,9 @@ fn search_neighbours(peers: Vec<String>, records: Vec<TxRecord>, level: u8) -> V
 fn main() {
     let loader = CSVFileStorage::new(get_data_path().unwrap());
     let records: Vec<TxRecord> = loader.load().unwrap();
-    let starting_address = "0x857c86988c53c1bc5bff75edfb97893fa40a8000".to_string();
+    let a0_address = "0x857c86988c53c1bc5bff75edfb97893fa40a8000".to_string();
 
-    let vacinity = search_neighbours(vec![starting_address], records.clone(), 0);
+    let vacinity = search_neighbours(vec![a0_address.clone()], records.clone(), 0);
     println!("vacinity: {:?}", vacinity);
     println!("");
 
@@ -112,7 +112,8 @@ fn main() {
         .collect_vec();
 
     let mut global_scores = vec![0.; size];
-    global_scores[0] = 1.;
+    let a0_index = index_mapping.get(&a0_address).unwrap();
+    global_scores[*a0_index] = 1.;
 
     let mat = Matrix::new(normalised_local_matrix);
     let mat_t = mat.transpose();
