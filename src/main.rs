@@ -79,7 +79,7 @@ fn main() {
     let mut local_trust_matrix = vec![vec![0u32; size]; size];
 
     vacinity.iter().for_each(|x| {
-        vacinity.iter().for_each(|y| {
+        vacinity.iter().filter(|y| **y != a0_address).for_each(|y| {
             let weight = outgoing_arc_weights
                 .get(&(x.clone(), y.clone()))
                 .unwrap_or(&0);
@@ -114,12 +114,14 @@ fn main() {
     let mut global_scores = vec![0.; size];
     let a0_index = index_mapping.get(&a0_address).unwrap();
     global_scores[*a0_index] = 1.;
+    println!("global_scores = {:?}", global_scores);
 
     let mat = Matrix::new(normalised_local_matrix);
     let mat_t = mat.transpose();
 
     for _ in 0..NUM_ITER {
         global_scores = mat_t.mul_add(global_scores);
+        println!("global_scores = {:?}", global_scores);
     }
 
     println!("global_scores = {:?}", global_scores);

@@ -5,12 +5,8 @@ use serde::Serialize;
 use std::{env::current_dir, fs::File, io::BufReader, path::PathBuf};
 
 pub trait Storage<T> {
-    /// The error type.
     type Err;
-
-    /// Loads data from storage.
     fn load(&self) -> Result<T, Self::Err>;
-    /// Saves data to storage.
     fn save(&mut self, data: T) -> Result<(), Self::Err>;
 }
 
@@ -19,7 +15,6 @@ pub struct CSVFileStorage {
 }
 
 impl CSVFileStorage {
-    /// Creates a new CSVFileStorage.
     pub fn new(filepath: PathBuf) -> Self {
         Self { filepath }
     }
@@ -43,14 +38,12 @@ impl<T: Serialize + DeserializeOwned + Clone> Storage<Vec<T>> for CSVFileStorage
             .from_path(&self.filepath)
             .map_err(|e| FeedError::FileIOError(e.to_string()))?;
 
-        // Loop over content and write each item
         for record in &data {
             writer
                 .serialize(record)
                 .map_err(|e| FeedError::FileIOError(e.to_string()))?;
         }
 
-        // Flush buffer
         writer
             .flush()
             .map_err(|e| FeedError::FileIOError(e.to_string()))?;
@@ -59,7 +52,6 @@ impl<T: Serialize + DeserializeOwned + Clone> Storage<Vec<T>> for CSVFileStorage
     }
 }
 
-/// Retrieves the path to the `assets` directory.
 pub fn get_data_path() -> Result<PathBuf, FeedError> {
     current_dir()
         .map_err(FeedError::IOError)
