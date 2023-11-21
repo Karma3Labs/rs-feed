@@ -52,8 +52,9 @@ impl<T: Serialize + DeserializeOwned + Clone> Storage<Vec<T>> for CSVFileStorage
     }
 }
 
-pub fn get_data_path() -> Result<PathBuf, FeedError> {
+pub fn get_data_path(filename: &str) -> Result<PathBuf, FeedError> {
     current_dir()
         .map_err(FeedError::IOError)
-        .map(|current_dir| current_dir.join("data.csv"))
+        .map(|current_dir| current_dir.join("data"))
+        .map(|data_dir| data_dir.join(format!("{}.csv", filename)))
 }
